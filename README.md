@@ -18,6 +18,7 @@ python python_exercises/lesson_01_classes.py
 Small object-oriented systems designed and implemented end-to-end, following the
 requirements → entities → class design → implementation flow described in `framework.txt`.
 
+<<<<<<< HEAD
 | Project | Description |
 |---|---|
 | [`amazon_locker/`](amazon_locker/) | Amazon-style parcel locker system — locker/compartment allocation, sizing, access tokens. |
@@ -48,3 +49,7 @@ A virtualenv is checked out at `.venv/`. Activate it before running anything:
 ```powershell
 .venv\Scripts\Activate.ps1
 ```
+=======
+### Design & concurrency notes
+Reference notes used while studying for LLD and concurrency interviews
+>>>>>>> e4837894246606eb05ddb39a1042c6371c3ad75c
