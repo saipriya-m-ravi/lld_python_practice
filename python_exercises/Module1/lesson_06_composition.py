@@ -11,26 +11,25 @@ from abc import ABC, abstractmethod
 class NotificationSender(ABC):
     @abstractmethod
     def send(self, message):
-        ...
+        """Send due notifications via notifier"""
 
 
 class EmailSender(NotificationSender):
     def send(self, message):
         # TODO: print(f"[EMAIL] {message}")
-        pass
+        print(f"[Email] {message}")
 
 
 class SMSSender(NotificationSender):
     def send(self, message):
         # TODO: print(f"[SMS] {message}")
-        pass
+        print(f"[SMS] {message}")
 
 
 class Library:
     def __init__(self, notifier):
-        # TODO: self.notifier = notifier
-        # TODO: self.books = []
-        pass
+        self.notifier = notifier
+        self.books = []
 
     def add_book(self, book):
         self.books.append(book)
@@ -38,14 +37,14 @@ class Library:
     def notify_overdue(self, member, title):
         # TODO: build message f"{member}, '{title}' is overdue"
         # TODO: call self.notifier.send(message)
-        pass
+        message = f"{member}, '{title}' is overdue"
+        self.notifier.send(message)
 
 
 if __name__ == "__main__":
-    # TODO: email_library = Library(EmailSender())
-    # TODO: sms_library = Library(SMSSender())
+    email_library = Library(EmailSender())
+    sms_library = Library(SMSSender())
 
-    # TODO: email_library.notify_overdue("Alice", "Dune")
-    # TODO: sms_library.notify_overdue("Bob", "Foundation")
-    #       -- same Library.notify_overdue() code path, different output per injected notifier
-    pass
+    email_library.notify_overdue("Alice", "Dune")
+    sms_library.notify_overdue("Bob", "Foundation")
+    
