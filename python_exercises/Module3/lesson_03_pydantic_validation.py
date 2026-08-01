@@ -33,6 +33,21 @@ books_db: dict[str, dict] = {}
 # Also add a @field_validator("title") that rejects a title that is only
 # whitespace (v.strip() == "") even though it passed min_length=1
 # (e.g. a single space "  " has length > 0 but is still garbage).
+
+class BookCreate(BaseModel):
+    isbn: str = Field(min_length=3, max_length=13, pattern=r"^[0-9]+$")
+    title: str = Field(min_length=1)
+    author: str = Field(min_length=1)
+    price: float = Field(gt=0)         
+    cost_price: float = Field(gt=0)
+    
+    @field_validator("title")
+    @classmethod
+    def name_not_blank(cls, v):
+        if not v.strip():
+            raise ValueError("name cannot be blank")
+        return v
+
 # ------------------------------------------------------------------
 
 
@@ -41,8 +56,12 @@ books_db: dict[str, dict] = {}
 # Fields: isbn, title, author, price, is_checked_out
 # Deliberately does NOT include cost_price.
 # ------------------------------------------------------------------
-
-
+class BookPublic(BaseModel):
+    isbn: str 
+    title: str 
+    author: str
+    price: float
+    is_checked_out: bool
 # ------------------------------------------------------------------
 # WORKED EXAMPLE
 # ------------------------------------------------------------------
@@ -58,7 +77,10 @@ def get_book(isbn: str):
 # TODO: GET /books, response_model=list[BookPublic]
 # - return list(books_db.values())
 # ------------------------------------------------------------------
-
+@app.get("/books", response_model=list[BookPublic], status_code=200)
+def get_books():
+    return books_db.values()
+    
 
 # ------------------------------------------------------------------
 # TODO: POST /books, response_model=BookPublic, status_code=201
@@ -68,3 +90,13 @@ def get_book(isbn: str):
 #   also set is_checked_out=False on the stored dict, then return it
 #   (response_model will strip cost_price from what's actually sent back)
 # ------------------------------------------------------------------
+@app.post("/books", response_model=BookPublic, status_code=201)
+def add_book(book: BookCreate):
+    if book.isbn in books_db.keys():
+        raise HTTPException(status_code=400, detail="Book already exists")
+    books_db[book.isbn] = book.model_dump()
+    books_db[book.isbn]["is_checked_out"] = False
+    return books_db[book.isbn]
+
+
+    
